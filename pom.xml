@@ -11,7 +11,7 @@
   </parent>
   <groupId>com.ancun.chain_storage</groupId>
   <artifactId>cs_node</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>cs_node</name>
   <description>cs_node</description>
   <properties>
@@ -48,11 +48,77 @@
     </dependency>
   </dependencies>
 
+  <!--  <build>-->
+  <!--    <plugins>-->
+  <!--      <plugin>-->
+  <!--        <groupId>org.springframework.boot</groupId>-->
+  <!--        <artifactId>spring-boot-maven-plugin</artifactId>-->
+  <!--      </plugin>-->
+  <!--    </plugins>-->
+  <!--  </build>-->
   <build>
     <plugins>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <version>1.10</version>
+        <configuration>
+          <repositoryLayout>flat</repositoryLayout>
+          <configurationDirectory>conf</configurationDirectory>
+          <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
+          <filterConfigurationDirectory>true</filterConfigurationDirectory>
+          <copyConfigurationDirectory>true</copyConfigurationDirectory>
+          <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+          <binFileExtensions>
+            <unix>.sh</unix>
+          </binFileExtensions>
+          <platforms>
+            <platform>unix</platform>
+          </platforms>
+          <repositoryName>lib</repositoryName>
+          <encoding>UTF-8</encoding>
+          <programs>
+            <program>
+              <mainClass>com.ancun.chain_storage.cs_node.CsNodeApplication</mainClass>
+              <id>start</id>
+              <jvmSettings>
+                <extraArguments>
+                  <extraArgument>-server</extraArgument>
+                  <extraArgument>-Xmx1G</extraArgument>
+                  <extraArgument>-Xms1G</extraArgument>
+                </extraArguments>
+              </jvmSettings>
+            </program>
+          </programs>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>assemble</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${maven-assembly-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <finalName>cs_node</finalName>
+          <descriptors>
+            <descriptor>src/main/resources/assembly/package.xml</descriptor>
+          </descriptors>
+        </configuration>
       </plugin>
     </plugins>
   </build>

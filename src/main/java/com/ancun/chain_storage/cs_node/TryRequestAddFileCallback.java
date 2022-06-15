@@ -85,7 +85,7 @@ public class TryRequestAddFileCallback implements EventCallback {
           */
 
           chainStorage.nodeCanAddFile(
-              cid, BigInteger.valueOf(6548)); // QmQPeNsJPyVWPFDVHb77w8G42Fvo15z4bG2X8D2GhfbSXc
+              cid, BigInteger.valueOf(1000)); // QmQPeNsJPyVWPFDVHb77w8G42Fvo15z4bG2X8D2GhfbSXc
         } catch (ABICodecException e) {
           logger.error(e.toString());
         }
