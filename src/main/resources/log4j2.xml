@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration status="info" monitorInterval="30">
+  <properties>
+    <!-- [21:55:33:047] [INFO] - org.apache.juli.logging.DirectJDKLog.log(DirectJDKLog.java:173) - Initializing Spring embedded WebApplicationContext -->
+    <Property name="log_pattern" value="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
+    <Property name="file_path" value="../logs"/>
+    <Property name="file_max_size" value="30MB"/>
+    <Property name="backup_folder" value="$${date:yyyy-MM}"/>
+    <Property name="backup_file_suffix" value="-%d{yyyy-MM-dd}-%i.log"/>
+  </properties>
+
+  <appenders>
+    <console name="Console" target="SYSTEM_OUT">
+      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${log_pattern}"/>
+    </console>
+
+    <RollingFile name="RollingFileInfo" fileName="${file_path}/info.log"
+      filePattern="${file_path}/${backup_folder}/info${backup_file_suffix}">
+      <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${log_pattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="${file_max_size}"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+
+    <RollingFile name="RollingFileWarn" fileName="${file_path}/warn.log"
+      filePattern="${file_path}/${backup_folder}/warn${backup_file_suffix}">
+      <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${log_pattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="${file_max_size}"/>
+      </Policies>
+    </RollingFile>
+
+    <RollingFile name="RollingFileError" fileName="${file_path}/error.log"
+      filePattern="${file_path}/${backup_folder}/error${backup_file_suffix}">
+      <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${log_pattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="${file_max_size}"/>
+      </Policies>
+    </RollingFile>
+  </appenders>
+
+  <loggers>
+    <logger name="com.ancun.chain_storage.node" level="debug"/>
+    <root level="error">
+      <appenderref ref="Console"/>
+      <!--      <appender-ref ref="RollingFileInfo"/>-->
+      <!--      <appender-ref ref="RollingFileWarn"/>-->
+      <!--      <appender-ref ref="RollingFileError"/>-->
+    </root>
+  </loggers>
+
+</configuration>

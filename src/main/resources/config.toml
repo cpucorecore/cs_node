@@ -3,22 +3,22 @@ certPath = "conf"                           # The certification path
 
 # The following configurations take the certPath by default if commented
 # caCert = "conf/ca.crt"                    # CA cert file path
-                                            # If connect to the GM node, default CA cert path is ${certPath}/gm/gmca.crt
+# If connect to the GM node, default CA cert path is ${certPath}/gm/gmca.crt
 
 # sslCert = "conf/sdk.crt"                  # SSL cert file path
-                                            # If connect to the GM node, the default SDK cert path is ${certPath}/gm/gmsdk.crt
+# If connect to the GM node, the default SDK cert path is ${certPath}/gm/gmsdk.crt
 
 # sslKey = "conf/sdk.key"                   # SSL key file path
-                                            # If connect to the GM node, the default SDK privateKey path is ${certPath}/gm/gmsdk.key
+# If connect to the GM node, the default SDK privateKey path is ${certPath}/gm/gmsdk.key
 
 # enSslCert = "conf/gm/gmensdk.crt"         # GM encryption cert file path
-                                            # default load the GM SSL encryption cert from ${certPath}/gm/gmensdk.crt
+# default load the GM SSL encryption cert from ${certPath}/gm/gmensdk.crt
 
 # enSslKey = "conf/gm/gmensdk.key"          # GM ssl cert file path
-                                            # default load the GM SSL encryption privateKey from ${certPath}/gm/gmensdk.key
+# default load the GM SSL encryption privateKey from ${certPath}/gm/gmensdk.key
 
 [network]
-peers=["192.168.0.220:20200"]    # The peer list to connect
+peers = ["192.168.0.220:20201"]    # The peer list to connect
 
 
 # AMOP configuration
@@ -44,18 +44,21 @@ keyStoreDir = "account"         # The directory to load/store the account file, 
 # accountFilePath = ""          # The account file path (default load from the path specified by the keyStoreDir)
 accountFileFormat = "p12"       # The storage format of account file (Default is "pem", "p12" as an option)
 
-accountAddress = "0xe4659c9672750095416573ee6691bfb56ad27019"           # The transactions sending account address
-                                # Default is a randomly generated account
-                                # The randomly generated account is stored in the path specified by the keyStoreDir
+#accountAddress = "0xe4659c9672750095416573ee6691bfb56ad27019"           # The transactions sending account address
+accountAddress = "0x468dbeae0ae58def8ef34938924eb58573499c7d"           # The transactions sending account address
+# Default is a randomly generated account
+# The randomly generated account is stored in the path specified by the keyStoreDir
 
-password = "18A046FF8C5F7C2F:1000:E8129CAA1231A9E1E6DDD2FC8F13BA4E97AAFBBC"                 # The password used to load the account file
+#password = "18A046FF8C5F7C2F:1000:E8129CAA1231A9E1E6DDD2FC8F13BA4E97AAFBBC"                 # The password used to load the account file
+
+password = "66F27C29EDE13006:1000:F1BF524332910B8604EAC940C5E7724672D316EA"                 # The password used to load the account file
 
 [threadPool]
-# channelProcessorThreadSize = "16"         # The size of the thread pool to process channel callback
-                                            # Default is the number of cpu cores
+channelProcessorThreadSize = "1"         # The size of the thread pool to process channel callback
+# Default is the number of cpu cores
 
-# receiptProcessorThreadSize = "16"         # The size of the thread pool to process transaction receipt notification
-                                            # Default is the number of cpu cores
+receiptProcessorThreadSize = "1"         # The size of the thread pool to process transaction receipt notification
+# Default is the number of cpu cores
 
 maxBlockingQueueSize = "102400"             # The max blocking queue size of the thread pool
 

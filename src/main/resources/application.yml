@@ -1,0 +1,20 @@
+app:
+  GroupId: 1
+  NodeStorageAddress: "0xd9467fcae231e17777838e62d764f320ad5a54c5"
+  FileStorageAddress: "0x88da2871b51cade94cf4f94637e02c6155743900"
+  NodeManagerAddress: "0xc8c9016218ebdd90f760043ecd9aeab5ab05c669"
+  ChainStorageAddress: "0x70d244c434432c04d6e1c1a63d1bf969dc3f2268"
+  TotalStorageBytes: 214748364800
+  Ext: "{}"
+  ConfigFilePath: "/home/sky/IdeaProjects/github.com/cpucorecore/cs_node/src/main/resources/config.toml"
+
+spring:
+  redis:
+    host: localhost
+    port: 6379
+
+  rabbitmq:
+    host: 192.168.10.93
+    port: 5672
+    username: admin
+    password: 1234
