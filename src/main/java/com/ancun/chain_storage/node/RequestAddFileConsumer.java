@@ -29,7 +29,7 @@ public class RequestAddFileConsumer {
     try {
       BigInteger fileStatus = fileStorage.getStatus(cid);
       logger.debug("fileStatus {}:{}", cid, fileStatus.longValue());
-      if (2 != fileStatus.longValue() || 3 != fileStatus.longValue()) {
+      if (2 != fileStatus.longValue() && 3 != fileStatus.longValue()) {
         logger.warn("file no in FileAdding/FilePartialAdded status, escape the cid: {}", cid);
         return;
       }

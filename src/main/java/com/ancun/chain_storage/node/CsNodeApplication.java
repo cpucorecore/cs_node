@@ -39,7 +39,7 @@ public class CsNodeApplication implements CommandLineRunner {
 
   @Resource private StringRedisTemplate redis;
 
-  @Autowired private RabbitTemplate rabbitTemplate;
+  @Resource private RabbitTemplate rabbitTemplate;
 
   private ABICodec abiCodec = new ABICodec(new CryptoSuite(SM_TYPE));
 
@@ -53,6 +53,8 @@ public class CsNodeApplication implements CommandLineRunner {
   private String selfAddress;
   private String RequestAddFileEventCountKey;
   private String TryRequestAddFileEventCountKey;
+
+  private TxCallback txCallback = new TxCallback();
 
   public static void main(String[] args) {
     SpringApplication.run(CsNodeApplication.class, args);
@@ -211,7 +213,7 @@ public class CsNodeApplication implements CommandLineRunner {
         }
         // TODO: do ipfs get/pin file, after success then to do 'chainStorage.nodeAddFile(cid)'
         logger.info("node duty: should add file cid: {}", cid);
-        chainStorage.nodeAddFile(cid);
+        chainStorage.nodeAddFile(cid, txCallback);
         logger.debug("node duty: finish add file: {}", cid);
       }
     }

@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Scope;
 
 @Configuration
 // @PropertySource("classpath:application.yml")
-public class ChainClient {
-  Logger logger = LoggerFactory.getLogger(ChainClient.class);
+public class BeanClient {
+  Logger logger = LoggerFactory.getLogger(BeanClient.class);
 
   @Value("${app.ConfigFilePath}")
   private String configFilePath;
