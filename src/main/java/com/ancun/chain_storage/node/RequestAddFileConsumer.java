@@ -3,6 +3,7 @@ package com.ancun.chain_storage.node;
 import com.ancun.chain_storage.node.contracts.ChainStorage;
 import com.ancun.chain_storage.node.contracts.FileStorage;
 import java.math.BigInteger;
+import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class RequestAddFileConsumer {
   Logger logger = LoggerFactory.getLogger(RequestAddFileConsumer.class);
 
+  @Autowired private Client client;
   @Autowired private FileStorage fileStorage;
   @Autowired private ChainStorage chainStorage;
 
@@ -26,6 +28,8 @@ public class RequestAddFileConsumer {
   public void handleMsg(String cid) {
     logger.debug("consume RequestAddFile cid: {}", cid);
 
+    String selfAddress = client.getCryptoSuite().getCryptoKeyPair().getAddress();
+
     try {
       BigInteger fileStatus = fileStorage.getStatus(cid);
       logger.debug("fileStatus {}:{}", cid, fileStatus.longValue());
@@ -34,7 +38,7 @@ public class RequestAddFileConsumer {
         return;
       }
 
-      Boolean nodeExist = fileStorage.nodeExist(cid, "0x468dbeae0ae58def8ef34938924eb58573499c7d");
+      Boolean nodeExist = fileStorage.nodeExist(cid, selfAddress);
       if (nodeExist) {
         logger.warn("nodeExist, escape the cid: {}", cid);
         return;

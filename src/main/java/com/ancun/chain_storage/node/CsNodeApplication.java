@@ -37,6 +37,15 @@ public class CsNodeApplication implements CommandLineRunner {
   @Value("${app.Ext}")
   private String ext;
 
+  @Value("${app.MQExchange}")
+  private String mqExchange;
+
+  @Value("${app.RequestAddFileRoutingKey}")
+  private String requestAddFileRoutingKey;
+
+  @Value("${app.TryRequestAddFileRoutingKey}")
+  private String tryRequestAddFileRoutingKey;
+
   @Resource private StringRedisTemplate redis;
 
   @Resource private RabbitTemplate rabbitTemplate;
@@ -47,12 +56,9 @@ public class CsNodeApplication implements CommandLineRunner {
   @Autowired private NodeStorage nodeStorage;
   @Autowired private NodeManager nodeManager;
   @Autowired private ChainStorage chainStorage;
-
   @Autowired private FileStorage fileStorage;
 
   private String selfAddress;
-  private String RequestAddFileEventCountKey;
-  private String TryRequestAddFileEventCountKey;
 
   private TxCallback txCallback = new TxCallback();
 
@@ -76,9 +82,6 @@ public class CsNodeApplication implements CommandLineRunner {
     selfAddress = keyPair.getAddress();
     logger.info("node address: {}", selfAddress);
 
-    RequestAddFileEventCountKey = "RequestAddFileEventCount:" + selfAddress;
-    TryRequestAddFileEventCountKey = "TryRequestAddFileEventCount:" + selfAddress;
-
     if (!nodeStorage.exist(selfAddress)) {
       chainStorage.nodeRegister(totalStorageBytes, ext);
     }
@@ -91,7 +94,6 @@ public class CsNodeApplication implements CommandLineRunner {
     if (block == null) {
       block = "latest";
     }
-
     logger.debug("subscribe log from block: {}", block);
 
     nodeManager.subscribeRequestAddFileEvent(
@@ -99,16 +101,13 @@ public class CsNodeApplication implements CommandLineRunner {
         "latest",
         null,
         new EventCallback() {
-          long RequestAddFileEventCount = 0;
           long latestBlockNumberProcessed = 0;
 
           @Override
           public void onReceiveLog(int status, List<EventLog> logs) {
             if (0 == status && null != logs) {
-              for (int i = 0; i < logs.size(); i++) {
+              for (EventLog log : logs) {
                 try {
-                  EventLog log = logs.get(i);
-
                   String logKey = generateLogKey(log);
                   if (redis.hasKey(logKey)) {
                     logger.warn("duplicated RequestAddFileEvent log: {}", logKey);
@@ -125,15 +124,9 @@ public class CsNodeApplication implements CommandLineRunner {
                   String nodeAddresses = event.get(1).toString();
 
                   if (nodeAddresses.contains(selfAddress)) {
-                    rabbitTemplate.convertAndSend("cs_direct_exchange", "RequestAddFile", cid);
+                    rabbitTemplate.convertAndSend(mqExchange, requestAddFileRoutingKey, cid);
 
                     redis.opsForValue().set(logKey, "");
-                    RequestAddFileEventCount += 1;
-                    redis
-                        .opsForValue()
-                        .set(RequestAddFileEventCountKey, String.valueOf(RequestAddFileEventCount));
-                    redis.opsForValue().set(logKey, "");
-
                     if (log.getBlockNumber().longValue() > latestBlockNumberProcessed) {
                       latestBlockNumberProcessed = log.getBlockNumber().longValue();
                       redis
@@ -154,8 +147,6 @@ public class CsNodeApplication implements CommandLineRunner {
         "latest",
         null,
         new EventCallback() {
-          int TryRequestAddFileEventCount = 0;
-
           @Override
           public void onReceiveLog(int status, List<EventLog> logs) {
             if (0 == status && null != logs) {
@@ -176,17 +167,9 @@ public class CsNodeApplication implements CommandLineRunner {
 
                   String cid = list.get(0).toString();
                   logger.debug("cid: {}", cid);
-
-                  rabbitTemplate.convertAndSend("cs_direct_exchange", "TryRequestAddFile", cid);
-
                   redis.opsForValue().set(logKey, "");
-                  TryRequestAddFileEventCount += 1;
-                  redis
-                      .opsForValue()
-                      .set(
-                          TryRequestAddFileEventCountKey,
-                          String.valueOf(TryRequestAddFileEventCount));
-                  redis.opsForValue().set(logKey, "");
+
+                  rabbitTemplate.convertAndSend(mqExchange, tryRequestAddFileRoutingKey, cid);
                 } catch (ABICodecException e) {
                   logger.error("ABICodecException: {}", e.toString());
                 }
@@ -210,11 +193,13 @@ public class CsNodeApplication implements CommandLineRunner {
           cid = fileStorage.getCid(cidHash);
         } catch (ContractException e) {
           logger.error("fileStorage.getCid failed, exception: {}", e);
+          continue;
         }
+
         // TODO: do ipfs get/pin file, after success then to do 'chainStorage.nodeAddFile(cid)'
         logger.info("node duty: should add file cid: {}", cid);
         chainStorage.nodeAddFile(cid, txCallback);
-        logger.debug("node duty: finish add file: {}", cid);
+        logger.debug("finish add file: {}", cid);
       }
     }
   }

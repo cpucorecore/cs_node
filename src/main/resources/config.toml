@@ -54,10 +54,10 @@ accountAddress = "0x468dbeae0ae58def8ef34938924eb58573499c7d"           # The tr
 password = "66F27C29EDE13006:1000:F1BF524332910B8604EAC940C5E7724672D316EA"                 # The password used to load the account file
 
 [threadPool]
-channelProcessorThreadSize = "1"         # The size of the thread pool to process channel callback
+# channelProcessorThreadSize = "1"         # The size of the thread pool to process channel callback
 # Default is the number of cpu cores
 
-receiptProcessorThreadSize = "1"         # The size of the thread pool to process transaction receipt notification
+# receiptProcessorThreadSize = "1"         # The size of the thread pool to process transaction receipt notification
 # Default is the number of cpu cores
 
 maxBlockingQueueSize = "102400"             # The max blocking queue size of the thread pool
