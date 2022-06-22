@@ -1,9 +1,8 @@
-package com.ancun.chain_storage.node;
+package com.ancun.chain_storage.node.config;
 
 import static org.fisco.bcos.sdk.model.CryptoType.SM_TYPE;
 
 import org.fisco.bcos.sdk.BcosSDK;
-import org.fisco.bcos.sdk.client.Client;
 import org.fisco.bcos.sdk.config.Config;
 import org.fisco.bcos.sdk.config.ConfigOption;
 import org.fisco.bcos.sdk.config.exceptions.ConfigException;
@@ -16,19 +15,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 @Configuration
-// @PropertySource("classpath:application.yml")
-public class BeanClient {
-  Logger logger = LoggerFactory.getLogger(BeanClient.class);
+public class ChainConfig {
+  Logger logger = LoggerFactory.getLogger(ChainConfig.class);
 
   @Value("${app.ConfigFilePath}")
   private String configFilePath;
 
-  @Value("${app.GroupId}")
-  private Integer groupId;
-
   @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
   @Bean
-  public Client getClient() {
+  public BcosSDK bcosSDK() {
     ConfigOption configOption = null;
     try {
       configOption = Config.load(configFilePath, SM_TYPE);
@@ -36,7 +31,6 @@ public class BeanClient {
       logger.error("load configure failed, exception: {}", e);
     }
 
-    BcosSDK bcosSDK = new BcosSDK(configOption);
-    return bcosSDK.getClient(groupId);
+    return new BcosSDK(configOption);
   }
 }

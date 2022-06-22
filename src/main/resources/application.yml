@@ -1,15 +1,14 @@
 app:
+  ConfigFilePath: "/home/sky/IdeaProjects/github.com/cpucorecore/cs_node/src/main/resources/config.toml"
   GroupId: 1
+
   NodeStorageAddress: "0x4a78f4394ca37f5b51c22265fbda26705b0b475d"
   FileStorageAddress: "0x8335a9c6fd7ac5a124bc0b559eb03b1ed3c43e10"
   NodeManagerAddress: "0x92b05522d8728652661c8754492d95fde9fdb1b2"
   ChainStorageAddress: "0x3ba7b3274a72d0bd233b81fdf22fa8b4d15fc2da"
-  TotalStorageBytes: 214748364800
+
   Ext: "{}"
-  MQExchange: "cs_direct_exchange"
-  RequestAddFileRoutingKey: "RequestAddFile"
-  TryRequestAddFileRoutingKey: "TryRequestAddFile"
-  ConfigFilePath: "/home/sky/IdeaProjects/github.com/cpucorecore/cs_node/src/main/resources/config.toml"
+  TotalStorageBytes: 214748364800
 
 spring:
   redis:
