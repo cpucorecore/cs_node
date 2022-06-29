@@ -25,6 +25,18 @@ public class RabbitConfig {
   }
 
   @Bean
+  public Queue tryRequestDeleteFileQueue() {
+    String queueName = "TryRequestDeleteFile-" + selfAddress;
+    return new Queue(queueName, true, false, false);
+  }
+
+  @Bean
+  public Queue requestDeleteFileQueue() {
+    String queueName = "RequestDeleteFile-" + selfAddress;
+    return new Queue(queueName, true, false, false);
+  }
+
+  @Bean
   public TopicExchange topicExchange() {
     String exchangeName = "NodeExchange-" + selfAddress;
     return new TopicExchange(exchangeName, true, false, null);
@@ -38,7 +50,21 @@ public class RabbitConfig {
   }
 
   @Bean
-  public Binding binding() {
+  public Binding bindingRequestAddFile() {
     return BindingBuilder.bind(requestAddFileQueue()).to(topicExchange()).with("RequestAddFile");
+  }
+
+  @Bean
+  public Binding bindingTryRequestDeleteFileQueue() {
+    return BindingBuilder.bind(tryRequestDeleteFileQueue())
+        .to(topicExchange())
+        .with("TryRequestDeleteFile");
+  }
+
+  @Bean
+  public Binding bindingRequestDeleteFile() {
+    return BindingBuilder.bind(requestDeleteFileQueue())
+        .to(topicExchange())
+        .with("RequestDeleteFile");
   }
 }

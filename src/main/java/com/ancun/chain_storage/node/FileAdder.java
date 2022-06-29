@@ -24,9 +24,10 @@ public class FileAdder {
     } catch (ContractException e) {
       logger.error("nodeStorage.getNodeCanAddFileCidHashes failed, exception: {}", e);
     }
+
     if (!nodeCanAddFileCidHashes.isEmpty()) {
+      String cid = null;
       for (byte[] cidHash : nodeCanAddFileCidHashes) {
-        String cid = null;
         try {
           cid = fileStorage.getCid(cidHash);
         } catch (ContractException e) {
@@ -34,10 +35,23 @@ public class FileAdder {
           continue;
         }
 
-        // TODO: do ipfs get/pin file, after success then to do 'chainStorage.nodeAddFile(cid)'
-        logger.info("node duty: should add file cid: {}", cid);
-        chainStorage.nodeAddFile(cid, txCallback);
-        logger.debug("finish add file: {}", cid);
+        long status = 0;
+        try {
+          status = fileStorage.getStatus(cid).longValue();
+        } catch (ContractException e) {
+          throw new RuntimeException(e);
+        }
+
+        logger.debug("status: {}", status);
+        if (4 == status) {
+          logger.warn("file {} in FileAdded status, do nodeCancelCanAddFile", cid);
+          chainStorage.nodeCancelCanAddFile(cid, txCallback);
+          continue;
+        } else if (2 == status || 3 == status) { // FileAdding/FilePartialAdded
+          // TODO: do ipfs get/pin file, after success then to do 'chainStorage.nodeAddFile(cid)'
+          chainStorage.nodeAddFile(cid, txCallback);
+          logger.debug("finish add file: {}", cid);
+        }
       }
     }
   }

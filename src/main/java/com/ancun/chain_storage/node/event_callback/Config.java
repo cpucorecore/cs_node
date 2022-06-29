@@ -14,4 +14,14 @@ public class Config {
   public TryRequestAddFileEventCallback tryRequestAddFileEventCallback() {
     return new TryRequestAddFileEventCallback();
   }
+
+  @Bean
+  public RequestDeleteFileEventCallback requestDeleteFileEventCallback() {
+    return new RequestDeleteFileEventCallback();
+  }
+
+  @Bean
+  public TryRequestDeleteFileEventCallback tryRequestDeleteFileEventCallback() {
+    return new TryRequestDeleteFileEventCallback();
+  }
 }

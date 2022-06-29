@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RequestAddFileConsumer {
-  Logger logger = LoggerFactory.getLogger(RequestAddFileConsumer.class);
+public class RequestDeleteFileConsumer {
+  Logger logger = LoggerFactory.getLogger(RequestDeleteFileConsumer.class);
 
   @Autowired private FileStorage fileStorage;
   @Autowired private ChainStorage chainStorage;
@@ -23,15 +23,16 @@ public class RequestAddFileConsumer {
   private TxCallback txCallback = new TxCallback();
 
   @RabbitHandler
-  @RabbitListener(queues = "#{queueName.requestAddFile(selfAddress)}")
+  @RabbitListener(queues = "#{queueName.requestDeleteFile(selfAddress)}")
   public void handleMsg(String cid) {
-    logger.debug("consume RequestAddFile cid: {}", cid);
+    logger.debug("consume RequestDeleteFile cid: {}", cid);
 
     try {
       BigInteger fileStatus = fileStorage.getStatus(cid);
       logger.debug("fileStatus {}:{}", cid, fileStatus.longValue());
-      if (2 != fileStatus.longValue() && 3 != fileStatus.longValue()) {
-        logger.warn("file no in FileAdding/FilePartialAdded status, escape the cid: {}", cid);
+
+      if (6 != fileStatus.longValue() && 7 != fileStatus.longValue()) {
+        logger.warn("file no in FileDeleting/FilePartialDeleted status, escape the cid: {}", cid);
         return;
       }
 
@@ -45,8 +46,8 @@ public class RequestAddFileConsumer {
     }
 
     logger.info("new log, receive request add file: {}", cid);
-    // TODO: ipfs add/pin file
-    chainStorage.nodeAddFile(cid, txCallback);
+    // TODO: ipfs unpin/delete file
+    chainStorage.nodeDeleteFile(cid, txCallback);
     logger.info("new log, node finish add this file: {}", cid);
   }
 }

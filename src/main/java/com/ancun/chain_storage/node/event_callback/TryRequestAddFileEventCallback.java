@@ -5,6 +5,7 @@ import static org.fisco.bcos.sdk.model.CryptoType.SM_TYPE;
 
 import com.ancun.chain_storage.node.contracts.NodeManager;
 import java.util.List;
+import javax.annotation.Resource;
 import org.fisco.bcos.sdk.abi.ABICodec;
 import org.fisco.bcos.sdk.abi.ABICodecException;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
@@ -20,18 +21,18 @@ public class TryRequestAddFileEventCallback implements EventCallback {
   private static Logger logger = LoggerFactory.getLogger(TryRequestAddFileEventCallback.class);
 
   @Autowired private String selfAddress;
-
-  @Autowired private StringRedisTemplate redis;
-
-  @Autowired private RabbitTemplate rabbitTemplate;
-
+  @Resource private StringRedisTemplate redis;
+  @Resource private RabbitTemplate rabbitTemplate;
   private ABICodec abiCodec = new ABICodec(new CryptoSuite(SM_TYPE));
+
+  private long latestBlockNumberProcessed = 0;
 
   @Override
   public void onReceiveLog(int status, List<EventLog> logs) {
     if (0 == status && null != logs) {
       for (EventLog log : logs) {
         try {
+          logger.debug("log: {}", log);
           String logKey = generateLogKey(selfAddress, log);
           if (redis.hasKey(logKey)) {
             logger.warn("duplicated TryRequestAddFileEvent log: {}", logKey);
@@ -46,9 +47,14 @@ public class TryRequestAddFileEventCallback implements EventCallback {
 
           String cid = list.get(0).toString();
           logger.debug("cid: {}", cid);
-          redis.opsForValue().set(logKey, "");
 
           rabbitTemplate.convertAndSend("NodeExchange-" + selfAddress, "TryRequestAddFile", cid);
+          redis.opsForValue().set(logKey, "");
+
+          if (log.getBlockNumber().longValue() > latestBlockNumberProcessed) {
+            latestBlockNumberProcessed = log.getBlockNumber().longValue();
+            redis.opsForValue().set(selfAddress, String.valueOf(latestBlockNumberProcessed));
+          }
         } catch (ABICodecException e) {
           logger.error("ABICodecException: {}", e.toString());
         }

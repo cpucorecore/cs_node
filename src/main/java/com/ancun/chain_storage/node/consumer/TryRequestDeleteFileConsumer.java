@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TryRequestAddFileConsumer {
-  Logger logger = LoggerFactory.getLogger(TryRequestAddFileConsumer.class);
+public class TryRequestDeleteFileConsumer {
+  Logger logger = LoggerFactory.getLogger(TryRequestDeleteFileConsumer.class);
+  @Autowired private String selfAddress;
   @Autowired private ChainStorage chainStorage;
   @Autowired private FileStorage fileStorage;
-  @Autowired private String selfAddress;
   @Autowired private TxCallback txCallback;
 
   @RabbitHandler
-  @RabbitListener(queues = "#{queueName.tryRequestAddFile(selfAddress)}")
+  @RabbitListener(queues = "#{queueName.tryRequestDeleteFile(selfAddress)}")
   public void handleMsg(String cid) {
-    logger.debug("consume TryRequestAddFile cid: {}", cid);
+    logger.debug("consume TryRequestDeleteFile cid: {}", cid);
 
     BigInteger fileStatus = null;
     try {
@@ -34,18 +34,13 @@ public class TryRequestAddFileConsumer {
     }
 
     logger.debug("fileStatus {}:{}", cid, fileStatus.longValue());
-    if (1 != fileStatus.longValue()) {
-      logger.warn("file no in TryAddFile status, escape the cid: {}", cid);
+    if (5 != fileStatus.longValue()) {
+      logger.warn("file no in FileTryDelete status, escape the cid: {}", cid);
       return;
     }
 
     logger.info("new log, receive try request add file: {}", cid);
-    // TODO: ipfs files stat /ipfs/QmcxbexfF4kvgYNzc6jxtnyqXkWc18JXw5XJj8pBtCgT28
-    BigInteger fileSize =
-        BigInteger.valueOf(
-            1000); // fileSize should get from ipfs files stat command, if file not exist do nothing
-                   // to escapse this cid
-    byte[] txHash = chainStorage.nodeCanAddFile(cid, fileSize, txCallback);
+    byte[] txHash = chainStorage.nodeCanDeleteFile(cid, txCallback);
     logger.info("new log, finish node can add file: {}, txHash: {}", cid, Utils.bytes2hex(txHash));
   }
 }

@@ -4,7 +4,9 @@ import com.ancun.chain_storage.node.contracts.ChainStorage;
 import com.ancun.chain_storage.node.contracts.NodeManager;
 import com.ancun.chain_storage.node.contracts.NodeStorage;
 import com.ancun.chain_storage.node.event_callback.RequestAddFileEventCallback;
+import com.ancun.chain_storage.node.event_callback.RequestDeleteFileEventCallback;
 import com.ancun.chain_storage.node.event_callback.TryRequestAddFileEventCallback;
+import com.ancun.chain_storage.node.event_callback.TryRequestDeleteFileEventCallback;
 import java.math.BigInteger;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -34,6 +36,8 @@ public class CsNodeApplication implements CommandLineRunner {
   @Autowired private ChainStorage chainStorage;
   @Autowired private TryRequestAddFileEventCallback tryRequestAddFileEventCallback;
   @Autowired private RequestAddFileEventCallback requestAddFileEventCallback;
+  @Autowired private TryRequestDeleteFileEventCallback tryRequestDeleteFileEventCallback;
+  @Autowired private RequestDeleteFileEventCallback requestDeleteFileEventCallback;
 
   public static void main(String[] args) {
     SpringApplication.run(CsNodeApplication.class, args);
@@ -61,5 +65,11 @@ public class CsNodeApplication implements CommandLineRunner {
 
     nodeManager.subscribeTryRequestAddFileEvent(
         block, "latest", null, tryRequestAddFileEventCallback);
+
+    nodeManager.subscribeRequestDeleteFileEvent(
+        block, "latest", null, requestDeleteFileEventCallback);
+
+    nodeManager.subscribeTryRequestDeleteFileEvent(
+        block, "latest", null, tryRequestDeleteFileEventCallback);
   }
 }

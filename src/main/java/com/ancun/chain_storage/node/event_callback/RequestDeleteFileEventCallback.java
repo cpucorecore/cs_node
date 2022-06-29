@@ -16,8 +16,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-public class RequestAddFileEventCallback implements EventCallback {
-  private static Logger logger = LoggerFactory.getLogger(RequestAddFileEventCallback.class);
+public class RequestDeleteFileEventCallback implements EventCallback {
+  private static Logger logger = LoggerFactory.getLogger(RequestDeleteFileEventCallback.class);
 
   @Autowired private String selfAddress;
 
@@ -36,11 +36,11 @@ public class RequestAddFileEventCallback implements EventCallback {
         try {
           String logKey = generateLogKey(selfAddress, log);
           if (redis.hasKey(logKey)) {
-            logger.warn("duplicated RequestAddFileEvent log: {}", logKey);
+            logger.warn("duplicated RequestDeleteFileEvent log: {}", logKey);
             continue;
           }
 
-          List<Object> event = abiCodec.decodeEvent(NodeManager.ABI, "RequestAddFile", log);
+          List<Object> event = abiCodec.decodeEvent(NodeManager.ABI, "RequestDeleteFile", log);
           if (2 != event.size()) {
             logger.error("wrong log: {}", log);
             continue;
@@ -50,13 +50,11 @@ public class RequestAddFileEventCallback implements EventCallback {
           String nodeAddresses = event.get(1).toString();
 
           if (nodeAddresses.contains(selfAddress)) {
-            rabbitTemplate.convertAndSend("NodeExchange-" + selfAddress, "RequestAddFile", cid);
+            rabbitTemplate.convertAndSend("NodeExchange-" + selfAddress, "RequestDeleteFile", cid);
             redis.opsForValue().set(logKey, "");
           }
 
-          if (log.getBlockNumber().longValue()
-              > latestBlockNumberProcessed) { // FIXME: latestBlockNumberProcessed should get from
-                                              // redis
+          if (log.getBlockNumber().longValue() > latestBlockNumberProcessed) {
             latestBlockNumberProcessed = log.getBlockNumber().longValue();
             redis.opsForValue().set(selfAddress, String.valueOf(latestBlockNumberProcessed));
           }

@@ -11,4 +11,12 @@ public class QueueName {
   public String tryRequestAddFile(String name) {
     return "TryRequestAddFile-" + name;
   }
+
+  public String requestDeleteFile(String name) {
+    return "RequestDeleteFile-" + name;
+  }
+
+  public String tryRequestDeleteFile(String name) {
+    return "TryRequestDeleteFile-" + name;
+  }
 }

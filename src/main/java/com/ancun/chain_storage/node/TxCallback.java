@@ -11,9 +11,9 @@ public class TxCallback extends TransactionCallback {
   @Override
   public void onResponse(TransactionReceipt receipt) {
     if (!receipt.isStatusOK()) {
-      logger.error("err={}", receipt.getMessage());
+      // logger.error("err={}", receipt.getMessage());
     } else {
-      logger.info("ok");
+      // logger.info("ok");
     }
   }
 }

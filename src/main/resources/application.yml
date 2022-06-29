@@ -2,10 +2,10 @@ app:
   ConfigFilePath: "/home/sky/IdeaProjects/github.com/cpucorecore/cs_node/src/main/resources/config.toml"
   GroupId: 1
 
-  NodeStorageAddress: "0x4a78f4394ca37f5b51c22265fbda26705b0b475d"
-  FileStorageAddress: "0x8335a9c6fd7ac5a124bc0b559eb03b1ed3c43e10"
-  NodeManagerAddress: "0x92b05522d8728652661c8754492d95fde9fdb1b2"
-  ChainStorageAddress: "0x3ba7b3274a72d0bd233b81fdf22fa8b4d15fc2da"
+  NodeStorageAddress: "0xc52338842c3edb63983344712190989703e82e34"
+  FileStorageAddress: "0xc4b8a9c51bc34fd52135656984737d91e47da5a9"
+  NodeManagerAddress: "0x0b8ba57fb7b9e99c233d761f4220c23f35bb5e56"
+  ChainStorageAddress: "0x4d0377768beb093ab43de4a0cd491a0f627fc086"
 
   Ext: "{}"
   TotalStorageBytes: 214748364800
