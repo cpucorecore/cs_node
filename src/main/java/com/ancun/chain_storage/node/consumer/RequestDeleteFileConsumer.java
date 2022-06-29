@@ -35,19 +35,22 @@ public class RequestDeleteFileConsumer {
         logger.warn("file no in FileDeleting/FilePartialDeleted status, escape the cid: {}", cid);
         return;
       }
-
-      Boolean nodeExist = fileStorage.nodeExist(cid, selfAddress);
-      if (nodeExist) {
-        logger.warn("nodeExist, escape the cid: {}", cid);
-        return;
-      }
     } catch (ContractException e) {
       logger.error("exception: {}", e);
     }
 
-    logger.info("new log, receive request add file: {}", cid);
-    // TODO: ipfs unpin/delete file
-    chainStorage.nodeDeleteFile(cid, txCallback);
-    logger.info("new log, node finish add this file: {}", cid);
+    Boolean nodeExist = null;
+    try {
+      nodeExist = fileStorage.nodeExist(cid, selfAddress);
+    } catch (ContractException e) {
+      throw new RuntimeException(e);
+    }
+
+    if (nodeExist) {
+      logger.info("new log, receive request add file: {}", cid);
+      // TODO: ipfs unpin/delete file
+      chainStorage.nodeDeleteFile(cid, txCallback);
+      logger.info("new log, node finish add this file: {}", cid);
+    }
   }
 }
