@@ -2,13 +2,15 @@ app:
   ConfigFilePath: "/home/sky/IdeaProjects/github.com/cpucorecore/cs_node/src/main/resources/config.toml"
   GroupId: 1
 
-  NodeStorageAddress: "0x074730f97f0bd74d63ee095ff54fa421db43e019"
-  FileStorageAddress: "0x2dea6e826794b55b822b71af43f12be8efa29a32"
-  NodeManagerAddress: "0x1a4548d57e3ae574023bb5a6f041c1e83a679b32"
-  ChainStorageAddress: "0x4d98ea132ded0b24ac64d1494b941b892dd0d05b"
+  NodeStorageAddress: "0x39d40e917c309164581c2e2b6c23d921f827c559"
+  FileStorageAddress: "0x619b6c93892a8d0fb595049ef77d90e5399f7224"
+  NodeManagerAddress: "0xa91b8f1c72d85fdd8476d12c54069918861f016d"
+  ChainStorageAddress: "0xeb328deef3eff2bc4348be45e004dc282bd5d95c"
 
   Ext: "{}"
   TotalStorageBytes: 214748364800
+  CheckAll: false
+  CheckInterval: 3600
 
 spring:
   redis:

@@ -11,6 +11,11 @@ public class BeanConfig {
   }
 
   @Bean
+  public Monitor monitor() {
+    return new Monitor();
+  }
+
+  @Bean
   public TxCallback txCallback() {
     return new TxCallback();
   }

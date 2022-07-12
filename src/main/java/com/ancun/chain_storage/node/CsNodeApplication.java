@@ -39,6 +39,8 @@ public class CsNodeApplication implements CommandLineRunner {
   @Autowired private TryRequestDeleteFileEventCallback tryRequestDeleteFileEventCallback;
   @Autowired private RequestDeleteFileEventCallback requestDeleteFileEventCallback;
 
+  @Autowired private Monitor monitor;
+
   public static void main(String[] args) {
     SpringApplication.run(CsNodeApplication.class, args);
   }
@@ -71,5 +73,7 @@ public class CsNodeApplication implements CommandLineRunner {
 
     nodeManager.subscribeTryRequestDeleteFileEvent(
         block, "latest", null, tryRequestDeleteFileEventCallback);
+
+    monitor.start();
   }
 }
